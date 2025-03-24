@@ -15,7 +15,7 @@ export default function Hero() {
           className="max-w-3xl mx-auto"
         >
           <div className="inline-block px-4 py-1 mb-4 border border-gray-700 rounded-full">
-            <p className="text-sm text-gray-300">Project management reimagined for students & freelancers</p>
+            <p className="text-sm text-gray-300">Welcome Back</p>
           </div>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
             Manage projects{" "}

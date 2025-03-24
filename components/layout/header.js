@@ -1,12 +1,23 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import Link from "next/link"
 import { Menu, X } from "lucide-react"
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [user, setUser] = useState(null)
+  const [avatar, setAvatar] = useState("/default-avatar.png") // Default avatar
+
+  useEffect(() => {
+    const userData = localStorage.getItem("user")
+    if (userData) {
+      const parsedUser = JSON.parse(userData)
+      setUser(parsedUser)
+      setAvatar(parsedUser.avatar || "/default-avatar.png") // Gunakan avatar user jika ada
+    }
+  }, [])
 
   return (
     <motion.header
@@ -44,15 +55,24 @@ export default function Header() {
           </Link>
         </div>
 
-        {/* Login/Register on the right */}
+        {/* Login/Register or Profile Avatar on the right */}
         <div className="hidden md:flex items-center space-x-4">
-
-          <Link
-            href="/login"
-            className="bg-white text-black px-4 py-2 rounded-md hover:bg-gray-200 transition-colors"
-          >
-            Get started!
-          </Link>
+          {user ? (
+            <Link href="/profile">
+              <img
+                src={avatar}
+                alt="Profile Avatar"
+                className="w-10 h-10 rounded-full border-2 border-gray-700 object-cover cursor-pointer"
+              />
+            </Link>
+          ) : (
+            <Link
+              href="/auth/register"
+              className="bg-white text-black px-4 py-2 rounded-md hover:bg-gray-200 transition-colors"
+            >
+              Get started!
+            </Link>
+          )}
         </div>
 
         {/* Mobile menu button */}
@@ -81,17 +101,25 @@ export default function Header() {
             <Link href="#pricing" className="text-gray-300 hover:text-white transition-colors">
               Pricing
             </Link>
-           
-            <Link
-              href="/"
-              className="bg-white text-black px-4 py-2 rounded-md hover:bg-gray-200 transition-colors text-center"
-            >
-              Get started!
-            </Link>
+            {user ? (
+              <Link href="/profile">
+                <img
+                  src={avatar}
+                  alt="Profile Avatar"
+                  className="w-10 h-10 rounded-full border-2 border-gray-700 object-cover cursor-pointer"
+                />
+              </Link>
+            ) : (
+              <Link
+                href="/auth/register"
+                className="bg-white text-black px-4 py-2 rounded-md hover:bg-gray-200 transition-colors text-center"
+              >
+                Get started!
+              </Link>
+            )}
           </div>
         </motion.div>
       )}
     </motion.header>
   )
 }
-

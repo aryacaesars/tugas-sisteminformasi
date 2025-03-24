@@ -42,12 +42,13 @@ export default function LoginPage() {
       return
     }
     
-    // Login successful
+    // Login successful, sertakan role jika ada
     const userData = {
       id: user.id,
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
+      role: user.role || null,
       isLoggedIn: true,
       loginTime: new Date().toISOString()
     }
@@ -55,8 +56,12 @@ export default function LoginPage() {
     // Save to localStorage
     localStorage.setItem("user", JSON.stringify(userData))
     
-    // Redirect to role-selection
-    router.push("/role-selection")
+    // Redirect ke dashboard jika role sudah ada, jika tidak ke role-selection
+    if (userData.role) {
+      router.push(`/dashboard/${userData.role}`)
+    } else {
+      router.push("/role-selection")
+    }
   }
   
   return (
@@ -83,7 +88,7 @@ export default function LoginPage() {
             <h2 className="mt-6 text-center text-gray-400 text-3xl font-bold">Sign in to your account</h2>
             <p className="mt-2 text-center text-gray-400">
               Or{" "}
-              <Link href="/register" className="text-white hover:underline">
+              <Link href="/auth/register" className="text-white hover:underline">
                 create a new account
               </Link>
             </p>

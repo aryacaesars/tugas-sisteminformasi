@@ -12,20 +12,21 @@ export default function RoleSelectionPage() {
   const router = useRouter()
   
   useEffect(() => {
-    // Check if user is logged in
     const userData = localStorage.getItem("user")
     if (!userData) {
-      // Redirect to login if not logged in
-      router.push("/login")
+      // Redirect ke login jika belum ada user
+      router.push("/auth/login")
       return
     }
-    
-    setUser(JSON.parse(userData))
-    
-    // Check if user already has a role
-    const userWithRole = JSON.parse(userData)
-    if (userWithRole.role) {
-      router.push("/dashboard")
+
+    const parsedUser = JSON.parse(userData)
+
+    // Jika user sudah memilih role (misalnya selain "global")
+    if (parsedUser.role && parsedUser.role !== "global") {
+      router.push(`/dashboard/${parsedUser.role}`)
+    } else {
+      // Tetap di halaman role selection jika role default (misalnya "global") atau belum di-set
+      setUser(parsedUser)
     }
   }, [router])
   
@@ -38,10 +39,20 @@ export default function RoleSelectionPage() {
       role: role
     }
     
-    // Save updated user data
+    // Save updated user data individually
     localStorage.setItem("user", JSON.stringify(updatedUser))
-    
-    // Redirect to role-specific dashboard
+
+    // Update user role di daftar users (untuk persistensi saat login ulang)
+    const users = JSON.parse(localStorage.getItem("users") || "[]")
+    const updatedUsers = users.map(u => {
+        if (u.email === updatedUser.email) {
+            return { ...u, role: role }
+        }
+        return u
+    })
+    localStorage.setItem("users", JSON.stringify(updatedUsers))
+
+    // Redirect ke dashboard role-spesifik
     router.push(`/dashboard/${role}`)
   }
   
